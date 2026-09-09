@@ -1,0 +1,56 @@
+generated: '2026-09-09'
+method: searched
+source: https://advicepay.com/changelog
+docs: https://advicepay.com/changelog
+scheme: uri-path-major
+current_version: v1
+documented_revision: 1.0.1
+changelog_page:
+  url: https://advicepay.com/changelog
+  status: 200
+  title: AdvicePay Changelog
+  machine_readable: false
+  feed:
+    url: https://advicepay.com/changelog/rss.xml
+    status: 200
+    items: 0
+    note: >-
+      The RSS endpoint exists and returns valid XML but contains zero <item> elements, and the
+      HTML page renders its entry list client-side (the server-rendered body carries navigation
+      and an "All Topics" filter but no posts). So AdvicePay publishes a changelog SURFACE that
+      neither a crawler nor an agent can read entries from. Recorded honestly: the page is real
+      and linked from the site's own navigation as "Latest Updates", but no dated entries could
+      be harvested on 2026-09-09.
+api_changelog:
+  published: false
+  note: >-
+    There is no API-specific changelog or release-notes feed. API changes are announced inline in
+    the reference at docs.advicepay.com, as a banner and as notes on the affected fields. The
+    entries below are the API changes that were actually announced there and are dated by their
+    stated deadline, not by a publication date.
+entries:
+- version: '1.0.1'
+  date: null
+  date_note: >-
+    No publication date is given; captured from the live reference on 2026-09-09. The associated
+    cutover date is 2026-12-02.
+  breaking: true
+  announced_in: https://docs.advicepay.com/#invoices
+  highlights:
+  - >-
+    Invoice status nomenclature is moving from "canceled" to "voided". Filtering accepts both
+    during the transition; payload responses still return "canceled" by default.
+  - >-
+    New opt-in query parameter useVoidedStatus (boolean, default false) makes invoice payloads
+    return "voided" early so integrations can be tested before the cutover.
+  - >-
+    On 2026-12-02 the API will stop accepting and returning "canceled", and the temporary
+    useVoidedStatus parameter will itself be removed.
+  additions:
+  - useVoidedStatus query parameter on the invoice endpoints
+  deprecations:
+  - Invoice status value "canceled" (replaced by "voided"), sunset 2026-12-02
+  - Signer.signedAt field (replaced by completedAt)
+  - Invoice.description field (replaced by the structured serviceDescriptions list)
+related:
+  lifecycle: lifecycle/advicepay-lifecycle.yml

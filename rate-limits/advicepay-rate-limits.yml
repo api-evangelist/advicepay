@@ -1,0 +1,68 @@
+generated: '2026-09-09'
+method: searched
+source: https://docs.advicepay.com/#common-responses
+docs: https://docs.advicepay.com/#common-responses
+limit_count: 2
+note: >-
+  AdvicePay publishes real per-second ceilings and returns standard rate-limit response headers on
+  every successful call, which is the runtime signal an agent actually needs. Limits are stated as
+  requests per second, with one endpoint carving out a lower ceiling.
+rate_limits:
+- id: default
+  scope: per-endpoint
+  applies_to: All endpoints except the agreement download endpoint
+  limit: 10
+  window: 1s
+  limit_display: 10 requests/sec
+  burst: null
+  burst_note: No burst allowance is documented.
+- id: agreement-download
+  scope: per-endpoint
+  applies_to: GET /api/public/v1/agreements/{id}/download
+  limit: 1
+  window: 1s
+  limit_display: 1 request/sec
+  burst: null
+  burst_note: >-
+    The download endpoint streams a rendered agreement document, which is why it carries a
+    ceiling ten times lower than the rest of the API. An integrator bulk-exporting agreements
+    must serialize those calls.
+headers:
+  on_success:
+  - header: X-RateLimit-Limit
+    type: integer
+    returned_on: '200'
+    description: The maximum number of requests permitted during the current rate limit window.
+  - header: X-RateLimit-Remaining
+    type: integer
+    returned_on: '200'
+    description: The number of requests remaining in the current rate limit window.
+  - header: X-RateLimit-Reset
+    type: integer
+    format: unix-timestamp
+    returned_on: '200'
+    description: The Unix timestamp for when the rate limit window will reset.
+  on_exhaustion:
+  - header: Retry-After
+    type: integer
+    format: seconds
+    returned_on: '429'
+    description: The number of seconds to wait before making a new request.
+  convention: >-
+    X-RateLimit-* (the de-facto pre-standard spelling), not the RFC 9239 / draft-ietf-httpapi
+    RateLimit-* form. Retry-After is RFC 9110 conformant.
+exhaustion:
+  status: 429
+  title: Too Many Requests
+  body: >-
+    The standard AdvicePay error envelope — {"code": 429, "message": "The API request rate limit
+    has been exceeded."} — see errors/advicepay-problem-types.yml.
+  recommended_handling: >-
+    Read Retry-After and sleep that many seconds. Because access tokens live only 5 minutes, a
+    client that backs off for a long interval should expect to refresh its token before retrying.
+agent_readiness_note: >-
+  This is a well-formed rate-limit contract by catalog standards: published numeric ceilings, a
+  documented per-endpoint exception, live headers on success (so a client can pace itself before
+  being throttled rather than after), and Retry-After on exhaustion. What is missing is a
+  per-account or per-key dimension — the docs describe the limits per endpoint only and do not
+  say whether the window is shared across an OAuth client, a user, or a firm.

@@ -1,0 +1,110 @@
+generated: '2026-09-09'
+method: searched
+source: https://advicepay.com/pricing/
+plan_count: 3
+currency: USD
+billing_model: >-
+  Subscription software fee plus per-transaction payment-processing fees. Both apply — the plan
+  price does not include the transaction fee.
+free_trial:
+  available: true
+  length_days: 14
+  note: '"Try AdvicePay free for 14-days" — offered on the Essential and Professional tiers.'
+plans:
+- name: Essential
+  price: 10
+  currency: USD
+  period: month
+  billing: monthly
+  unit: account
+  summary: All the basics to jump-start a fee-based business.
+  contract_length: month-to-month
+  terms: Standard MSA
+  limits:
+    advisors: 1
+    active_clients: 10
+  included:
+  - One-time and recurring invoices
+  - Accept credit card and ACH payments
+  - AdvicePay logo (no custom branding)
+  - Client payment portal
+  - Email support and knowledge base
+  api_access: false
+- name: Professional
+  price: 50
+  currency: USD
+  period: month
+  billing: monthly
+  unit: user
+  price_display: $50/user per month
+  summary: Advanced capabilities for growth-oriented advisors and ensemble firms.
+  contract_length: month-to-month
+  terms: Standard MSA
+  limits:
+    advisors: unlimited
+    active_clients: unlimited
+    admins: unlimited
+  included:
+  - Everything in Essential
+  - Custom logo
+  - Standard integrations (Wealthbox, Redtail, Pontera, PreciseFP and others)
+  - eSignature integrations (Dropbox Sign, DocuSign, Adobe Acrobat Sign)
+  - Zapier integration
+  - Fee calculators, client and advisor notifications
+  api_access: false
+- name: Enterprise
+  price: null
+  price_display: Custom
+  currency: USD
+  period: month
+  billing: contract
+  unit: user
+  summary: Scalable solution for enterprise home offices and their advisors.
+  contract_length: 1- or 3-year
+  terms: Redlined MSA
+  limits:
+    advisors: unlimited
+    active_clients: unlimited
+  included:
+  - Everything in Professional
+  - Custom engagement workflows
+  - Advisor segmentation and approval guardrails
+  - Deliverables
+  - Mobile check deposit
+  - Fee scrape reporting, audit logs
+  - Dedicated customer success manager, custom training and webinars
+  api_access: true
+  quote_required: true
+  contact: https://advicepay.com/contact-sales/
+transaction_fees:
+- method: credit-card
+  rate: 3.5%
+  fixed: 0.30
+  currency: USD
+  display: 3.5% + $0.30 per credit card transaction
+- method: ach
+  rate: 1.5%
+  minimum: 0.30
+  currency: USD
+  display: 1.5% per ACH transaction, minimum of $0.30
+- method: enterprise
+  rate: custom
+  display: Contact us for custom transaction fee rates
+api_availability:
+  gated: true
+  tier: Enterprise
+  detail: >-
+    THE API IS AN ENTERPRISE-ONLY CAPABILITY. The published pricing comparison lists "API" under
+    INTEGRATIONS & API with a checkmark against Enterprise only, and the Enterprise tier summary
+    on the site describes it as the plan for firms that need "advanced features, workflows,
+    dedicated support, and API access". Essential and Professional customers get the standard and
+    Zapier integrations but not the REST API. Developer-console access (where OAuth clients, the
+    client-credentials toggle and private-key JWT public keys are managed) follows the same gate.
+    The DOCUMENTATION, however, is fully public at docs.advicepay.com with no login — so the
+    contract is readable by anyone even though calling it requires an Enterprise contract.
+  evidence:
+  - url: https://advicepay.com/pricing/
+    status: 200
+security_terms:
+  all_plans: Privacy Policy + SOC 2
+  note: The pricing comparison lists "Privacy Policy + SOC 2" as the data/security terms on all three tiers.

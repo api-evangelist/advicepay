@@ -1,0 +1,122 @@
+generated: '2026-09-09'
+method: searched
+source: https://docs.advicepay.com/#authentication
+docs: https://docs.advicepay.com/#authentication
+note: >-
+  Derived by reading the published AdvicePay API documentation, not from a machine-readable
+  OpenAPI document — AdvicePay publishes no OpenAPI/Swagger file (see x-contract-discovery in
+  apis.yml). Every scheme, endpoint, lifetime and claim below is stated verbatim in the docs.
+summary:
+  types:
+  - oauth2
+  - apiKey
+  - saml2
+  api_key_in:
+  - cookie
+  oauth2_flows:
+  - authorizationCode
+  - clientCredentials
+  client_authentication_methods:
+  - client_secret_post
+  - client_secret_jwt
+  - private_key_jwt
+schemes:
+- name: OAuth2
+  type: oauth2
+  description: >-
+    OAuth 2.0 is the mechanism for all public API access. Access tokens are presented in the
+    Authorization header as "Bearer <token>".
+  bearer_header: 'Authorization: Bearer <access_token>'
+  flows:
+  - flow: authorizationCode
+    description: >-
+      For user-level integrations where AdvicePay users sit in different accounts. OAuth clients
+      for firms with developer access are created in the developer console; partner clients are
+      provisioned on request (company name, website URL, logo and redirect URI required).
+    authorizationUrl: https://app.advicepay.com/oauth2/authorize
+    tokenUrl: https://app.advicepay.com/oauth2/access_token
+    refreshUrl: https://app.advicepay.com/oauth2/access_token
+    authorization_code_ttl_seconds: 600
+    state_parameter: supported (optional, CSRF protection)
+  - flow: clientCredentials
+    description: >-
+      For enterprise account-owner accounts acting on behalf of an integrating system. Enabled
+      per OAuth client with the "Enable OAuth 2.0 Client Credentials Flow" toggle.
+    tokenUrl: https://app.advicepay.com/oauth2/access_token
+- name: SessionCookie
+  type: apiKey
+  in: cookie
+  parameter_name: session
+  description: Session-based authentication using a secure HTTP-only cookie (browser sessions).
+- name: SAML2 SSO
+  type: saml2
+  description: >-
+    SAML 2.0 single sign-on. POST /auth/sso consumes a SAMLResponse plus RelayState and creates a
+    session, keyed by a `source` company slug that selects the certificate to validate against.
+    The integrator's public certificate must be installed on an AdvicePay server first
+    (enterprise@advicepay.com). GET /auth/sso supports deep linking into the application.
+  endpoints:
+  - POST /auth/sso
+  - GET /auth/sso
+token_lifetimes:
+  access_token_seconds: 300
+  access_token_note: Access tokens expire after 5 minutes (both flows).
+  refresh_token_days: 30
+  refresh_token_rotation: >-
+    Refresh tokens are single-use. A new refresh token is issued every time one is consumed and
+    the previous one is invalidated, so the integrator must persist the new token after every
+    refresh call.
+  authorization_code_seconds: 600
+client_authentication_methods:
+- id: client_secret_post
+  description: >-
+    Client secret sent in the request body as `client_secret`. The docs describe this as the
+    least secure of the three methods.
+  security_posture: lowest
+- id: client_secret_jwt
+  description: >-
+    A JWT signed with the client secret using HS256, sent as `client_assertion` with
+    client_assertion_type urn:ietf:params:oauth:client-assertion-type:jwt-bearer. The secret
+    never leaves the integrator's server.
+  algorithm: HS256
+  security_posture: better
+- id: private_key_jwt
+  description: >-
+    A JWT signed with the integrator's private key using RS256; the public key is uploaded in the
+    developer dashboard and AdvicePay verifies each request against it. The docs describe this as
+    the most secure method.
+  algorithm: RS256
+  security_posture: highest
+jwt_client_assertion:
+  client_assertion_type: urn:ietf:params:oauth:client-assertion-type:jwt-bearer
+  standard: RFC 7523 (JWT profile for OAuth 2.0 client authentication)
+  claims:
+  - claim: aud
+    required: true
+    description: The URL of the resource being authenticated to, generally https://app.advicepay.com/oauth2/access_token
+  - claim: exp
+    required: true
+    description: Expiration time; requests received after exp are rejected. Short lifetimes recommended.
+  - claim: iat
+    required: true
+    description: Issued-at time; requests received before iat are rejected.
+  - claim: iss
+    required: true
+    description: Issuer — always the client ID.
+  - claim: sub
+    required: true
+    description: Subject — always the client ID.
+  - claim: jti
+    required: false
+    description: >-
+      Token identifier. When present AdvicePay prevents the same jti being replayed, mitigating
+      replay attacks. The docs highly recommend it.
+scopes:
+  supported:
+  - all
+  note: The docs state that only the scope value "all" is currently supported.
+developer_console: >-
+  OAuth clients, the client-credentials toggle, the client authentication method and the
+  private-key JWT public key are all managed in the AdvicePay developer console, available to
+  firms with developer access (an Enterprise-plan capability). Partner/integration clients are
+  provisioned on request via enterprise@advicepay.com.

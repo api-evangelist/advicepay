@@ -1,0 +1,95 @@
+generated: '2026-09-09'
+method: searched
+source: https://docs.advicepay.com/
+versioning:
+  scheme: uri-path
+  current: v1
+  documented_revision: 1.0.1
+  path: /api/public/v1
+  version_header: null
+  docs: https://docs.advicepay.com/#introduction
+  note: >-
+    Major version pinned in the path. The 1.0.1 revision appears in the documentation title only;
+    there is no way for a client to read the running revision from a response.
+deprecation:
+  policy_url: null
+  policy_published: false
+  sunset_header: false
+  deprecation_header: false
+  practice: >-
+    AdvicePay has no written deprecation POLICY document, but it demonstrably PRACTICES managed
+    deprecation, and the current live example is a good one: a banner at the top of the reference,
+    a named deadline, backward-compatible dual behavior during the transition, and an opt-in
+    parameter so integrators can test the post-deprecation payload before the cutover. What is
+    missing is the machine-readable half — no RFC 8594 Sunset or Deprecation response headers, so
+    a client learns about a retirement only by a human reading the docs.
+  active_deprecations:
+  - id: invoice-status-canceled
+    subject: The "canceled" invoice status string
+    replacement: voided
+    announced_in: https://docs.advicepay.com/#invoices
+    sunset_date: '2026-12-02'
+    breaking: true
+    current_behavior: >-
+      Filtering by either "canceled" or "voided" temporarily returns the same results. Response
+      payloads still return "canceled" by default.
+    opt_in_mechanism:
+      parameter: useVoidedStatus
+      location: query
+      type: boolean
+      default: false
+      description: >-
+        Set true to receive "voided" instead of "canceled" in the invoice payload response, so an
+        integration can be tested and verified ahead of the deadline.
+    on_sunset: >-
+      The API will no longer accept or return the "canceled" string, and the temporary
+      useVoidedStatus parameter will itself be removed.
+    affected_operations:
+    - GET /api/public/v1/invoices
+    - GET /api/public/v1/invoices/{id}
+  deprecated_fields:
+  - field: Signer.signedAt
+    replacement: completedAt
+    source: https://docs.advicepay.com/#schemaSigner
+    note: Marked "[DEPRECATED - See completedAt]" in the Signer schema.
+  - field: Invoice.description
+    replacement: serviceDescriptions
+    source: https://docs.advicepay.com/#schemaInvoice
+    note: >-
+      "This is the first description in the list of descriptions on the invoice that the advisor
+      provided. Deprecated." — superseded by the structured service-description list.
+deprecated_operations: []
+status_page:
+  url: https://status.advicepay.com/
+  provider: Atlassian Statuspage
+  machine_readable: true
+  endpoints:
+  - url: https://status.advicepay.com/api/v2/summary.json
+    status: 200
+    description: Full component and incident summary.
+  - url: https://status.advicepay.com/api/v2/status.json
+    status: 200
+    description: Current overall status indicator.
+  note: >-
+    A real hosted status page with the standard Statuspage v2 JSON API, so an agent can poll
+    availability without scraping. The security page names it as the channel for maintenance,
+    incidents and operational security issues.
+sla:
+  url: null
+  uptime_target: null
+  note: >-
+    No public SLA or uptime commitment is published. Enterprise agreements are governed by a
+    redlined MSA (per the pricing comparison), so any availability commitment is contractual and
+    not disclosed.
+support:
+  channels:
+  - type: email
+    url: https://advicepay.com/contact-support/
+  - type: knowledge-base
+    url: https://advicepay.helpscoutdocs.com/
+  - type: enterprise
+    url: mailto:enterprise@advicepay.com
+    note: The documented channel for SSO certificate installation and partner OAuth client provisioning.
+  note: >-
+    The pricing comparison lists email support and knowledge base on all three tiers, with a
+    dedicated customer success manager and custom training on Enterprise only.

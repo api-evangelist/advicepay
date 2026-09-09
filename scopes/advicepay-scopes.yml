@@ -1,0 +1,42 @@
+generated: '2026-09-09'
+method: searched
+source: https://docs.advicepay.com/#oauth-authorization-code-flow
+docs: https://docs.advicepay.com/#authentication
+note: >-
+  AdvicePay publishes no OpenAPI, so derive-oauth-scopes.py has no spec to read; this file was
+  written from the published OAuth documentation instead. AdvicePay operates OAuth 2.0 but has
+  not (yet) decomposed access into granular scopes — the docs state plainly that "Currently, only
+  'all' is supported" for the scope parameter on the authorization request. Authorization is
+  therefore all-or-nothing at the token level and is narrowed instead by the role of the
+  authorizing user (admin / advisor / account owner) and by the plan. This is an honest record of
+  a single coarse scope, not a gap in our reading.
+schemes:
+- name: OAuth2
+  source: https://docs.advicepay.com/#authentication
+  flows:
+  - flow: authorizationCode
+    authorizationUrl: https://app.advicepay.com/oauth2/authorize
+    tokenUrl: https://app.advicepay.com/oauth2/access_token
+  - flow: clientCredentials
+    tokenUrl: https://app.advicepay.com/oauth2/access_token
+scopes:
+- scope: all
+  description: >-
+    Full access to the AdvicePay public API on behalf of the authorizing user or account owner.
+    The only scope value the authorization endpoint accepts.
+  flows:
+  - authorizationCode
+  - clientCredentials
+  sources:
+  - https://docs.advicepay.com/#oauth-authorization-code-flow
+scope_granularity: coarse
+scope_count: 1
+effective_authorization:
+  model: role-and-tenant
+  description: >-
+    Because there is one scope, what a token can actually reach is decided by who authorized it.
+    An authorization-code token is bound to a single AdvicePay user and inherits that user's role
+    (admin, advisor, reviewer) and office/firm boundary; a client-credentials token acts as the
+    enterprise account owner across the firm. The /me endpoint is the documented way for an
+    integrator to discover which identity and role a token actually carries.
+  discovery_operation: GET /api/public/v1/me

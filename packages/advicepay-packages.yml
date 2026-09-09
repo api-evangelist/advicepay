@@ -1,0 +1,39 @@
+generated: '2026-09-09'
+method: searched
+source: >-
+  Registry searches on 2026-09-09 plus the AdvicePay documentation and integrations pages.
+package_count: 0
+official_sdk_count: 0
+packages: []
+note: >-
+  ADVICEPAY PUBLISHES NO CLIENT LIBRARIES. Searched npm (registry.npmjs.org search "advicepay":
+  0 results), PyPI (advicepay, advicepay-api, advicepay-python: all 404), RubyGems (search
+  "advicepay": empty), NuGet (azuresearch query "advicepay": 0 hits), crates.io (0 crates) and
+  Packagist (only unrelated "advicepharmagroup/*" packages). There is no first-party GitHub
+  organization either — github.com/advicepay is a personal account belonging to co-founder Alan
+  Moore with 0 public repositories, so no source-distributed client exists to catalog.
+  Consequently NO `SDKs` pointer is emitted in apis.yml; sdk_count is genuinely zero.
+code_samples:
+  published: true
+  location: https://docs.advicepay.com/
+  languages:
+  - go
+  - csharp
+  - http
+  - java
+  - javascript
+  - python
+  - ruby
+  note: >-
+    Worth distinguishing from an SDK, because it is easy to mistake one for the other here. The
+    reference renders a request snippet per operation in seven languages, selectable from a
+    language tab bar. These are generated raw-HTTP snippets (net/http, RestClient, requests) that
+    build the call by hand — they are not a client library, they are not versioned or
+    distributed, and there is nothing to install. An integrator writes their own HTTP client.
+distribution_channels:
+  no_code:
+  - name: Zapier
+    note: >-
+      A Zapier integration is listed on the pricing comparison for Professional and Enterprise —
+      the closest thing to a packaged client AdvicePay ships, but a hosted connector rather than
+      an installable library.

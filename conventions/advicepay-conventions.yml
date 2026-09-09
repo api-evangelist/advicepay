@@ -1,0 +1,253 @@
+generated: '2026-09-09'
+method: searched
+source: https://docs.advicepay.com/
+docs: https://docs.advicepay.com/#api-response-data
+note: >-
+  Cross-cutting request/response semantics read from the published AdvicePay API documentation.
+  AdvicePay publishes no OpenAPI, so nothing here is derived from a machine-readable spec —
+  every rule below is stated in the HTML reference at docs.advicepay.com.
+api:
+  name: AdvicePay API
+  version: 1.0.1
+  style: REST
+  base_path: /api/public/v1
+  base_urls:
+  - https://app.advicepay.com
+  - https://demo.advicepay.com
+  media_type: application/json
+  description: >-
+    Resource-oriented URLs, JSON request and response bodies, standard HTTP verbs and status
+    codes. Mutations use PUT (not PATCH) for partial updates; there is no PATCH surface.
+authentication:
+  style: oauth2-bearer
+  header: 'Authorization: Bearer <access_token>'
+  detail: authentication/advicepay-authentication.yml
+  agent_note: >-
+    Access tokens live 5 minutes and refresh tokens are single-use and rotate on every use. Any
+    long-running agent must persist the newly-issued refresh token after each refresh or it will
+    lock itself out.
+idempotency:
+  supported: false
+  coverage: none
+  mechanism: null
+  header: null
+  detail: >-
+    NO REPLAY PROTECTION EXISTS. The AdvicePay documentation contains no reference to
+    idempotency, an Idempotency-Key header, a client-supplied request key, a de-duplication
+    window, or any safe-retry contract — the string "idempot" does not appear anywhere in the
+    published reference. This matters more here than it would for a read-mostly API because the
+    write surface moves money: POST /api/public/v1/invoices creates a billable invoice,
+    POST /api/public/v1/subscriptions starts recurring billing, and
+    PUT /api/public/v1/invoices/{id}/refund moves funds back to a client. A client that retries a
+    timed-out POST has no documented way to learn whether the first attempt landed, and no way to
+    make the retry safe. The one adjacent guard is on the OAuth token endpoint rather than the
+    API: an optional `jti` claim in a client-assertion JWT, which AdvicePay will refuse to accept
+    twice — replay protection for authentication, not for business operations.
+  workaround: >-
+    The only safe pattern available is read-back reconciliation: after an ambiguous write, list
+    the resource (GET /api/public/v1/invoices with the created-after filters, or GET the
+    subscription) and match on your own reference before retrying.
+pagination:
+  styles:
+  - offset
+  - keyset
+  default: offset
+  selector_param: pageMode
+  detail: >-
+    Two selectable modes on list endpoints, chosen with the pageMode query parameter. Offset is
+    the default and the docs state it "becomes slower as the number of records increases"; keyset
+    "maintains consistent performance, regardless of total number of records".
+  modes:
+  - mode: offset
+    request_params:
+    - pageMode=offset
+    - page
+    - perPage
+    response_fields:
+    - pageMode
+    - page
+    - perPage
+    - totalItems
+    - totalPages
+    note: Gives a total count, so a client can show progress; degrades on large collections.
+  - mode: keyset
+    request_params:
+    - pageMode=keyset
+    - lastID
+    - perPage
+    response_fields:
+    - pageMode
+    - lastID
+    - perPage
+    - hasMore
+    note: >-
+      Send back the lastID from the previous page to fetch the next. No total count — completion
+      is signalled by hasMore going false. This is the mode an agent should use for a full sweep.
+  envelope: >-
+    List responses carry a `pagination` object that is a oneOf/xor of OffsetPagination and
+    KeysetPagination, alongside the resource array.
+filtering:
+  style: query-parameters
+  common_params:
+  - param: advisorID
+    description: Scope a list to one advisor (notifications, and other advisor-scoped collections).
+  - param: clientID
+    description: Scope a list to one client.
+  - param: createdAfter
+    description: Unix timestamp lower bound on creation time.
+  - param: createdBefore
+    description: Unix timestamp upper bound on creation time.
+  - param: status
+    description: Resource status filter — e.g. invoice status (unpaid, paid, pending_payment, voided).
+  note: >-
+    Time filters are Unix timestamps (integers), consistent with the wire format for every date
+    field in the API.
+data_conventions:
+  timestamps:
+    format: unix-epoch-seconds
+    fields:
+    - createdAt
+    - updatedAt
+    - deletedAt
+    - invoiceDate
+    - dueDate
+    - failedAt
+    - refundDate
+    note: >-
+      Every date on the wire is an integer Unix timestamp, not an ISO 8601 string. A deletedAt of
+      0 means not deleted.
+  money:
+    format: integer-minor-units
+    unit: cents
+    currency: USD
+    note: >-
+      Amounts are integers in cents (an invoice `amount` of 10000 is $100.00). The refund
+      endpoint enforces amount > 50 cents and <= the amount paid.
+  identifiers:
+    format: integer
+    note: >-
+      Resource ids are plain integers, not prefixed opaque strings. Cross-resource references are
+      integer foreign keys named <entity>ID (clientID, advisorID, engagementID, subscriptionID).
+  soft_delete:
+    supported: true
+    field: deletedAt
+    note: Records carry deletedAt; 0 indicates a live record.
+field_expansion:
+  supported: false
+  note: No documented expand/include parameter or sparse-fieldset mechanism.
+metadata:
+  supported: partial
+  mechanism: custom attributes
+  note: >-
+    Rather than a free-form metadata bag, AdvicePay exposes firm-defined custom attributes on
+    clients and advisors, discoverable through GET /api/public/v1/client_attributes and
+    GET /api/public/v1/advisor_attributes.
+request_tracing:
+  request_id_header: null
+  supported: false
+  note: >-
+    No request-id or correlation-id response header is documented. An integrator debugging a
+    failed call has no server-side handle to quote to support.
+versioning:
+  scheme: uri-path
+  current: v1
+  api_version: 1.0.1
+  path: /api/public/v1
+  header: null
+  note: >-
+    Major version in the URI path; the 1.0.1 revision number appears only in the docs title, not
+    on the wire, and there is no version request header. Breaking changes are announced in the
+    docs with a dated deadline (see lifecycle/advicepay-lifecycle.yml) and, in the one live case,
+    an opt-in query parameter to test the new behavior early.
+error_envelope:
+  format: custom-json
+  fields:
+  - code
+  - message
+  - details
+  detail: errors/advicepay-problem-types.yml
+  note: Not RFC 9457; content type is application/json, not application/problem+json.
+rate_limit_signaling:
+  headers:
+  - X-RateLimit-Limit
+  - X-RateLimit-Remaining
+  - X-RateLimit-Reset
+  - Retry-After
+  detail: rate-limits/advicepay-rate-limits.yml
+dry_run_mode:
+  supported: false
+  coverage: none
+  note: >-
+    There is no dry-run, preview, validate-only or simulate parameter on any write operation. An
+    agent cannot rehearse an invoice or a refund. The substitute AdvicePay offers is a whole
+    parallel environment rather than a per-request flag — demo.advicepay.com, which the docs say
+    "does not affect your live data or interact with banking networks". See
+    sandbox/advicepay-sandbox.yml.
+reversibility:
+  grade: documented
+  coverage: partial
+  detail: >-
+    AdvicePay ships one genuine reversal operation and no stated window for it, which is exactly
+    the "documented but not verified" case. Refund exists, is first-class, and supports partial
+    amounts; but the documentation nowhere states how long after payment a refund remains
+    possible, and NO WINDOW IS ASSERTED HERE BECAUSE NONE IS PUBLISHED. Most other write
+    operations have no reversal at all: there is no undelete for admins or advisors, no cancel or
+    void operation on the API surface (invoices reach a "voided" status but the docs expose no
+    endpoint that sets it), and no unsubmit for a deliverable.
+  write_surfaces:
+  - operation: PUT /api/public/v1/invoices/{id}/refund
+    name: Refund an Invoice
+    reverses: A paid invoice, fully or partially
+    reversal_type: refund
+    window: null
+    window_stated: false
+    constraints:
+    - Amount must be greater than 50 cents.
+    - Amount must be less than or equal to the amount already paid on the invoice.
+    - An optional customMessage is included in the email notifying the client of the refund.
+    side_effects: >-
+      The client is emailed. The invoice gains refundAmount, refundDate and refundMessage fields.
+      A failed refund surfaces as the refund_failed invoice status.
+    grade: documented
+    docs: https://docs.advicepay.com/#refund-an-invoice
+  - operation: DELETE /api/public/v1/admins/{id}
+    name: Delete an Admin
+    reversal_operation: null
+    window: null
+    grade: none
+    note: No restore or undelete endpoint is published. Records carry a deletedAt field, which suggests
+      a soft delete server-side, but no API operation reverses it.
+  - operation: DELETE /api/public/v1/advisors/{id}
+    name: Delete an Advisor
+    reversal_operation: null
+    window: null
+    grade: none
+    note: Same as admins — soft-delete field present, no published reversal operation.
+  - operation: POST /api/public/v1/invoices
+    name: Create an Invoice
+    reversal_operation: null
+    window: null
+    grade: none
+    note: >-
+      Invoices have a "voided" status (and a deprecated "canceled" synonym), but the public API
+      documents no operation that voids one. Voiding appears to be a UI-only action.
+  - operation: POST /api/public/v1/subscriptions
+    name: Create a Subscription
+    reversal_operation: null
+    window: null
+    grade: none
+    note: >-
+      No cancel, pause or delete operation for subscriptions is published. Only List, Create and
+      Get exist on the subscriptions resource, so an agent that starts recurring billing through
+      the API cannot stop it through the API.
+  agent_guidance: >-
+    Treat every AdvicePay write except a refund as one-way. The combination that deserves care is
+    subscriptions: creatable by API, not cancellable by API, and with no idempotency key to make
+    a retry safe.
+related:
+  authentication: authentication/advicepay-authentication.yml
+  errors: errors/advicepay-problem-types.yml
+  lifecycle: lifecycle/advicepay-lifecycle.yml
+  rate_limits: rate-limits/advicepay-rate-limits.yml
+  sandbox: sandbox/advicepay-sandbox.yml
+  data_model: data-model/advicepay-data-model.yml

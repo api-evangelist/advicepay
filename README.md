@@ -64,5 +64,79 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-AdvicePay is a company surfaced via the API Evangelist harvest backlog (source: secondary-market) and added to the network as a stub for full-pipeline profiling.
-- https://www.nasdaqprivatemarket.com/
+AdvicePay is a fee-for-service billing, payment processing and engagement-management platform for
+financial advisors, RIAs and broker-dealers. Founded by Michael Kitces and Alan Moore, it lets firms
+invoice clients for financial planning advice, collect card and ACH payments, run recurring
+subscriptions, capture eSignatures, and track engagement workflows, deliverables and compliance
+oversight.
+
+- Website: https://advicepay.com/
+- API reference: https://docs.advicepay.com/
+- Status: https://status.advicepay.com/
+- Security and compliance: https://advicepay.com/security/
+
+## The API
+
+AdvicePay publishes a public REST API (v1.0.1) at `https://app.advicepay.com/api/public/v1`, with a
+test environment at `https://demo.advicepay.com` that does not touch live data or banking networks.
+The reference documents 55 operations across 13 resources: admins, advisors, agreements, clients,
+custom attributes, deliverables, engagements, invoices, notifications, offices, subscriptions and
+transfers.
+
+Authentication is OAuth 2.0 (authorization code and client credentials) with three client
+authentication methods — `client_secret_post`, `client_secret_jwt` (HS256) and `private_key_jwt`
+(RS256) — plus SAML 2.0 single sign-on. Access tokens live 5 minutes; refresh tokens are single-use
+and rotate on every use.
+
+**API access is an Enterprise-plan capability.** The documentation is fully public and needs no
+login, but calling the API requires an Enterprise contract.
+
+## What this profile found
+
+- **No machine-readable contract.** The reference is a server-rendered Slate page that looks
+  widdershins-generated, so an OpenAPI almost certainly exists internally — but none is served.
+  Probed 14 spec paths across four hosts; all miss. See `x-contract-discovery` in `apis.yml`.
+  No spec has been generated from the docs, because an authored contract would be a fabrication.
+- **No idempotency, on an API that moves money.** Nothing in the documentation describes an
+  idempotency key, a de-duplication window or a safe-retry contract, including on invoice creation,
+  subscription creation and refunds.
+- **No webhooks.** Change notification is polling-only, via the notifications endpoint with
+  `createdAfter` / `createdBefore` filters.
+- **Refunds are the only reversal.** Subscriptions can be created through the API but not
+  cancelled through it, and no window is published for how long a refund remains possible.
+- **Good rate-limit hygiene.** Published ceilings (10 req/sec, 1 req/sec on agreement download),
+  `X-RateLimit-*` headers on success and `Retry-After` on 429.
+- **A well-run deprecation in flight.** The `canceled` invoice status is being replaced by
+  `voided` on 2026-12-02, with dual-accept during the transition and a `useVoidedStatus` opt-in
+  parameter for testing ahead of the cutover — announced in prose only, with no RFC 8594 headers.
+- **No SDKs.** Nothing on npm, PyPI, RubyGems, NuGet, crates.io or Packagist, and no first-party
+  GitHub organization. The docs' seven-language snippets are generated raw-HTTP samples.
+- **No `/.well-known/` surface.** All 15 named paths 404 on all five hosts.
+- **Real compliance posture.** SOC 2 Type II (KirkpatrickPrice, annual), PCI SAQ A behind Stripe,
+  annual third-party penetration tests.
+
+## Artifacts in this repository
+
+| Artifact | File |
+|---|---|
+| Authentication profile | `authentication/advicepay-authentication.yml` |
+| OAuth scopes | `scopes/advicepay-scopes.yml` |
+| Error catalog | `errors/advicepay-problem-types.yml` |
+| Rate limits | `rate-limits/advicepay-rate-limits.yml` |
+| Conventions, idempotency, reversibility | `conventions/advicepay-conventions.yml` |
+| Lifecycle and deprecation | `lifecycle/advicepay-lifecycle.yml` |
+| Conformance and domain standards | `conformance/advicepay-conformance.yml` |
+| Data model | `data-model/advicepay-data-model.yml` |
+| Sandbox and test environment | `sandbox/advicepay-sandbox.yml` |
+| Plans and pricing | `plans/advicepay-plans-pricing.yml` |
+| Changelog | `changelog/advicepay-changelog.yml` |
+| Packages | `packages/advicepay-packages.yml` |
+| Well-known probe | `well-known/advicepay-well-known.yml` |
+| Candidate MCP tool list | `mcp/advicepay-mcp.yml` |
+| Domain security | `security/advicepay-domain-security.yml` |
+| Vulnerability disclosure | `security/advicepay-vulnerability-disclosure.yml` |
+| Trust center | `security/advicepay-trust-center.yml` |
+| llms.txt | `llms/advicepay-llms.txt` |
+
+The MCP tool list is a **candidate** derived by API Evangelist from AdvicePay's documented
+operations. AdvicePay ships no MCP server; nothing can call it.

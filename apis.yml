@@ -1,23 +1,215 @@
 aid: advicepay
 name: AdvicePay
-description: 'AdvicePay is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+description: 'AdvicePay is a fee-for-service billing, payment processing and engagement-management
+  platform built for financial advisors, RIAs and broker-dealers. Founded by Michael Kitces and
+  Alan Moore, it lets firms invoice clients for financial planning advice, collect card and ACH
+  payments, run recurring subscriptions, capture eSignatures, track engagement workflows and
+  deliverables, and enforce compliance oversight over advisor billing. AdvicePay publishes a
+  public REST API (v1.0.1) at app.advicepay.com/api/public/v1 covering admins, advisors,
+  agreements, clients, custom attributes, deliverables, engagements, invoices, notifications,
+  offices, subscriptions and transfers, secured with OAuth 2.0 (authorization code and client
+  credentials, with client_secret_post, client_secret_jwt and private_key_jwt authentication
+  methods) plus SAML 2.0 single sign-on. API access is an Enterprise-plan capability.'
+image: https://advicepay.com/hubfs/AdvicePay%20Logos/PNG%20AdvicePay%20Logos%20(Email)/Website%20Favicon.png
 url: https://raw.githubusercontent.com/api-evangelist/advicepay/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:secondary-market
-x-tier: stub
-x-tier-reason: harvest
 specificationVersion: '0.20'
 created: '2026-09-09'
 modified: '2026-09-09'
 tags:
-- Company
-apis: []
+- Financial Services
+- Payments
+- Billing
+- Invoicing
+- Financial Planning
+- Wealth Management
+- Subscriptions
+- eSignature
+- Compliance
+- FinTech
+apis:
+- aid: advicepay-api
+  name: AdvicePay API
+  description: 'The AdvicePay REST API (v1.0.1) exposes the fee-for-service billing platform to
+    integrators: admins, advisors, agreements, clients, custom attributes, deliverables,
+    engagements, invoices, notifications, offices, subscriptions and transfers. It is organized
+    around resource-oriented URLs, accepts and returns JSON, and uses standard HTTP verbs and
+    status codes. Authentication is OAuth 2.0 bearer; a demo environment at demo.advicepay.com
+    mirrors production without touching live data or banking networks.'
+  image: https://advicepay.com/hubfs/AdvicePay%20Logos/PNG%20AdvicePay%20Logos%20(Email)/Website%20Favicon.png
+  humanURL: https://docs.advicepay.com/#introduction
+  baseURL: https://app.advicepay.com/api/public/v1
+  tags:
+  - Payments
+  - Billing
+  - Invoicing
+  - Financial Planning
+  properties:
+  - type: Documentation
+    url: https://docs.advicepay.com/#introduction
+  - type: APIReference
+    url: https://docs.advicepay.com/
+  - type: Authentication
+    url: authentication/advicepay-authentication.yml
+  - type: OAuthScopes
+    url: scopes/advicepay-scopes.yml
+  - type: ErrorCatalog
+    url: errors/advicepay-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/advicepay-rate-limits.yml
+  - type: Conventions
+    url: conventions/advicepay-conventions.yml
+  - type: DataModel
+    url: data-model/advicepay-data-model.yml
+  - type: Sandbox
+    url: sandbox/advicepay-sandbox.yml
+  - type: X-MCPServerCandidate
+    url: mcp/advicepay-mcp.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: TrustCenter
+  url: security/advicepay-trust-center.yml
+- type: DomainSecurity
+  url: security/advicepay-domain-security.yml
+- type: VulnerabilityDisclosure
+  url: security/advicepay-vulnerability-disclosure.yml
 - type: Website
-  url: https://www.nasdaqprivatemarket.com/
+  url: https://advicepay.com/
+- type: DeveloperPortal
+  url: https://docs.advicepay.com/
+- type: Documentation
+  url: https://docs.advicepay.com/#introduction
+- type: APIReference
+  url: https://docs.advicepay.com/
+- type: GettingStarted
+  url: https://docs.advicepay.com/#introduction
+- type: Support
+  url: https://advicepay.com/contact-support/
+- type: HelpCenter
+  url: https://advicepay.helpscoutdocs.com/
+- type: Blog
+  url: https://blog.advicepay.com/blog
+- type: Pricing
+  url: https://advicepay.com/pricing/
+- type: SignUp
+  url: https://app.advicepay.com/signup
+- type: Login
+  url: https://app.advicepay.com/
+- type: TermsOfService
+  url: https://advicepay.com/terms-of-use/
+- type: PrivacyPolicy
+  url: https://advicepay.com/privacy-policy
+- type: StatusPage
+  url: https://status.advicepay.com/
+- type: ChangeLog
+  url: https://advicepay.com/changelog
+- type: Security
+  url: https://advicepay.com/security/
+- type: Compliance
+  url: https://advicepay.com/security/
+- type: Integrations
+  url: https://advicepay.com/integrations/
+- type: Plans
+  url: plans/advicepay-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/advicepay-rate-limits.yml
+- type: Authentication
+  url: authentication/advicepay-authentication.yml
+- type: OAuthScopes
+  url: scopes/advicepay-scopes.yml
+- type: ErrorCatalog
+  url: errors/advicepay-problem-types.yml
+- type: Conventions
+  url: conventions/advicepay-conventions.yml
+- type: Lifecycle
+  url: lifecycle/advicepay-lifecycle.yml
+- type: Deprecation
+  url: lifecycle/advicepay-lifecycle.yml
+- type: Conformance
+  url: conformance/advicepay-conformance.yml
+- type: DataModel
+  url: data-model/advicepay-data-model.yml
+- type: Sandbox
+  url: sandbox/advicepay-sandbox.yml
+- type: ChangeLog
+  url: changelog/advicepay-changelog.yml
+- type: Packages
+  url: packages/advicepay-packages.yml
+- type: X-MCPServerCandidate
+  url: mcp/advicepay-mcp.yml
+- type: LLMsTxt
+  url: llms/advicepay-llms.txt
+x-contract-discovery:
+  date: '2026-09-09'
+  result: no-machine-readable-contract
+  detail: >-
+    AdvicePay documents 55 REST operations across 13 resources in a fully public, server-rendered
+    reference at docs.advicepay.com, but publishes no machine-readable description of any kind.
+    The reference is a Slate page whose shape (a Base URLs block, per-operation parameter tables,
+    a Schemas section with 44 schemas including a oneOf/xor Pagination union) is characteristic of
+    widdershins output, which strongly implies an OpenAPI document exists internally. It is not
+    served anywhere reachable. No spec has been generated from the documentation, because a
+    contract this pipeline authored would be a fabrication.
+  probes:
+  - hosts:
+    - https://docs.advicepay.com
+    - https://app.advicepay.com
+    - https://advicepay.com
+    - https://demo.advicepay.com
+    paths:
+    - /openapi.json
+    - /openapi.yaml
+    - /openapi.yml
+    - /swagger.json
+    - /swagger.yaml
+    - /api-docs
+    - /v1/openapi.json
+    - /api/openapi.json
+    - /redoc
+    - /docs/openapi.json
+    - /spec.json
+    - /source/openapi.json
+    - /api/v1/swagger.json
+    - /apis.json
+    result: no 200 carrying a parsing OpenAPI or Swagger document on any host/path combination
+  - target: graphql
+    result: no GraphQL surface is documented or discoverable
+  - target: mcp
+    endpoints_probed:
+    - https://mcp.advicepay.com/mcp
+    - https://app.advicepay.com/mcp
+    - https://app.advicepay.com/api/mcp
+    - https://advicepay.com/mcp
+    result: 'DNS failure or 404/403 on every endpoint; no tools/list responded'
+  - target: a2a-agent-card
+    paths:
+    - /.well-known/agent-card.json
+    - /.well-known/agent.json
+    hosts_probed: 5
+    result: 404 on every host (403 on the S3-backed docs bucket); no card exists
+  - target: soap-wsdl
+    result: >-
+      No SOAP surface. ?wsdl returns 404 on app.advicepay.com; advicepay.com returns its ordinary
+      HubSpot homepage with the query string ignored, which is not a WSDL.
+  - target: ogc
+    result: not applicable - no geospatial surface and no evidence pointing at one
+  - target: asyncapi-webhooks
+    result: >-
+      No event surface exists. The string "webhook" does not appear anywhere in the reference;
+      change notification is polling-only via GET /api/public/v1/notifications.
+  docs_host_note: >-
+    docs.advicepay.com is a static S3 bucket. It answers 403 AccessDenied for any key that does
+    not exist, which is that host's equivalent of a 404 and must not be read as an auth wall.
+  provider_fixable: >-
+    Publishing the underlying OpenAPI at docs.advicepay.com/openapi.json would be a small change
+    with a large effect: it is very likely already generated to build these docs.
+x-enrichment:
+  date: '2026-09-09'
+  status: enriched
+  artifacts_added: 18
+  pass: local-v3

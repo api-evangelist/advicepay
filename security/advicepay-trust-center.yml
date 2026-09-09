@@ -1,0 +1,72 @@
+generated: '2026-09-09'
+method: searched
+probe: true
+source: https://advicepay.com/security/
+url: https://advicepay.com/security/
+style: security-page
+note: >-
+  AdvicePay has no dedicated trust portal (trust.advicepay.com does not resolve) — the compliance
+  posture is published as a section of its own website. Enriched by hand from the page after the
+  mechanical probe recorded only "SOC 2"; the detail below is quoted from that page.
+certifications:
+- id: soc2-type-ii
+  name: SOC 2 Type II
+  first_party: true
+  auditor: KirkpatrickPrice
+  cadence: annual
+  scope: Reporting controls relating to security and availability.
+  report_available: not stated
+- id: pci-saq-a
+  name: PCI SAQ A
+  first_party: true
+  cadence: annual
+  scope: >-
+    Self-Assessment Questionnaire A, performed as required by AdvicePay's processing partner
+    Stripe. AdvicePay states it does not store, process or transmit cardholder data — Stripe
+    performs all cardholder-data functions — which is what makes SAQ A the applicable instrument.
+controls:
+- id: penetration-testing
+  description: Annual independent third-party penetration tests of the platform.
+- id: encryption-in-transit
+  description: HTTPS exclusively for all client and advisor traffic. Confirmed by probe — TLS 1.3
+    with HSTS (max-age 31536000) on advicepay.com and docs.advicepay.com.
+- id: mfa
+  description: The pricing comparison lists "Required MFA" as a data and security feature.
+- id: audit-logs
+  description: Audit logs and email logs, listed on the pricing comparison.
+- id: status-transparency
+  description: >-
+    Maintenance, incidents and operational security issues are reported on
+    https://status.advicepay.com/.
+vendor_certifications_inherited:
+  note: >-
+    THESE ARE NOT ADVICEPAY'S OWN ATTESTATIONS. The security page also lists its vendors'
+    certifications, which is common practice but easy to misread as first-party. Recorded
+    separately so no reader or scorer credits them to AdvicePay.
+  vendors:
+  - vendor: Amazon Web Services
+    role: infrastructure hosting
+    certifications:
+    - ISO 27001
+    - ISO 27017
+    - ISO 27018
+    - SOC 1/SSAE 16/ISAE 3402
+    - SOC 2
+    - SOC 3
+    - PCI DSS Level 1
+  - vendor: Stripe
+    role: payment processing
+    certifications:
+    - PCI DSS Service Provider Level 1
+    - SOC 2 Type II (annual)
+legal:
+  terms_of_use: https://advicepay.com/terms-of-use/
+  privacy_policy: https://advicepay.com/privacy-policy
+evidence:
+- source: https://advicepay.com/security/
+  status: 200
+  keywords:
+  - soc 2 type ii
+  - kirkpatrickprice
+  - pci saq a
+  - penetration tests

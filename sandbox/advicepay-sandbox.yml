@@ -1,0 +1,66 @@
+generated: '2026-09-09'
+method: searched
+source: https://docs.advicepay.com/#introduction
+note: >-
+  AdvicePay separates test from live by ENVIRONMENT (a whole parallel host) rather than by key
+  prefix or a mode flag on the account. Everything below is stated in the published docs; no test
+  values are invented, and AdvicePay publishes none.
+test_environment:
+  available: true
+  style: separate-host
+  base_url: https://demo.advicepay.com
+  live_base_url: https://app.advicepay.com
+  description: >-
+    "You can use the API through our test environment, which does not affect your live data or
+    interact with banking networks." The demo host is listed as a first-class base URL in the
+    reference alongside production, so the same paths, payloads and OAuth flows apply — only the
+    host changes.
+  isolation:
+    live_data: false
+    banking_networks: false
+    note: >-
+      Two separate guarantees, and the second is the one that matters for a payments API: calls
+      against demo do not reach card or ACH rails, so no money moves and no client is charged.
+  same_contract: true
+  path_prefix: /api/public/v1
+key_separation:
+  style: separate-credentials-per-environment
+  test_key_prefix: null
+  live_key_prefix: null
+  note: >-
+    There are no documented test-vs-live key prefixes (no sk_test_/sk_live_ equivalent).
+    Credentials are OAuth clients provisioned in the developer console, and the environment is
+    selected by which host you call. The docs do not state whether a demo OAuth client is
+    provisioned separately from a production one — an integrator should confirm with AdvicePay.
+test_values:
+  test_cards: null
+  test_bank_accounts: null
+  test_ibans: null
+  note: >-
+    NO MAGIC TEST VALUES ARE PUBLISHED. The documentation lists no test card numbers, test ACH
+    routing/account numbers, or trigger amounts that force a decline, a refund failure or a
+    dispute. Because AdvicePay's card and ACH processing is performed by Stripe, Stripe's standard
+    test values may well work against the demo environment — but AdvicePay does not say so, so
+    that is an inference an integrator must verify rather than a documented fact, and it is
+    deliberately not recorded here as one.
+time_simulation:
+  test_clocks: false
+  note: >-
+    No test-clock or time-travel facility is documented. This is a real gap for this product:
+    subscriptions and recurring invoices are core to AdvicePay, and there is no published way to
+    fast-forward a billing cycle in demo to observe the next invoice being generated.
+fixtures_and_triggers:
+  available: false
+  note: No fixture loader, seed-data tool, or event-trigger CLI is published.
+free_trial:
+  available: true
+  length_days: 14
+  url: https://advicepay.com/demo/
+  note: >-
+    A 14-day free trial of the product exists, but the REST API is an Enterprise-tier capability
+    (see plans/advicepay-plans-pricing.yml), so a trial account does not by itself grant API access.
+access_note: >-
+  The documentation is fully public and needs no login, but obtaining credentials for either
+  environment requires an Enterprise relationship — OAuth clients are created in a developer
+  console available to firms with developer access, and partner clients are provisioned on
+  request via enterprise@advicepay.com.

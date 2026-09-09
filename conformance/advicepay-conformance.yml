@@ -1,0 +1,135 @@
+generated: '2026-09-09'
+method: searched
+source: https://docs.advicepay.com/
+note: >-
+  Assessed from the published documentation and the public security/compliance page. AdvicePay
+  ships no OpenAPI, so nothing here is derived from a spec; each entry cites the docs location
+  that states it.
+standards:
+- id: oauth2
+  conforms: true
+  evidence: >-
+    OAuth 2.0 authorization-code and client-credentials flows with documented /oauth2/authorize
+    and /oauth2/access_token endpoints, bearer tokens, state parameter and refresh-token rotation.
+  source: https://docs.advicepay.com/#authentication
+- id: rfc7523-jwt-client-authentication
+  conforms: true
+  evidence: >-
+    client_secret_jwt (HS256) and private_key_jwt (RS256) client assertions with
+    client_assertion_type urn:ietf:params:oauth:client-assertion-type:jwt-bearer and the full
+    aud/exp/iat/iss/sub claim set, plus optional jti replay prevention.
+  source: https://docs.advicepay.com/#oauth-authentication-methods
+- id: oidc
+  conforms: false
+  evidence: >-
+    No OpenID Connect layer, no id_token, and no /.well-known/openid-configuration on any host
+    (probed 2026-09-09, all 404 — see well-known/advicepay-well-known.yml).
+- id: rfc8414-oauth-authorization-server-metadata
+  conforms: false
+  evidence: >-
+    /.well-known/oauth-authorization-server returns 404 on every host. OAuth endpoints must be
+    hard-coded from the HTML documentation.
+- id: saml2
+  conforms: true
+  evidence: >-
+    SAML 2.0 single sign-on: POST /auth/sso consumes SAMLResponse and RelayState against a
+    per-firm certificate selected by a `source` slug; GET /auth/sso supports deep linking.
+  source: https://docs.advicepay.com/#single-sign-on
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: >-
+    Errors use a proprietary {code, message, details} envelope served as application/json, not
+    application/problem+json, and carry no per-type URI.
+  source: https://docs.advicepay.com/#common-responses
+- id: json-api
+  conforms: false
+  evidence: Plain resource JSON; no JSON:API document structure, type/attributes envelope or media type.
+- id: pagination
+  conforms: true
+  evidence: >-
+    Two documented modes selected by pageMode — offset (page/perPage/totalItems/totalPages) and
+    keyset (lastID/perPage/hasMore) — consistently applied across list endpoints.
+  source: https://docs.advicepay.com/#schemapagination
+- id: idempotency
+  conforms: false
+  evidence: >-
+    No idempotency key, header or de-duplication contract appears anywhere in the documentation,
+    including on the money-moving write operations. See conventions/advicepay-conventions.yml.
+- id: rate-limit-headers
+  conforms: partial
+  evidence: >-
+    Returns X-RateLimit-Limit / X-RateLimit-Remaining / X-RateLimit-Reset on success and
+    Retry-After on 429. Uses the de-facto X-RateLimit-* spelling rather than the IETF
+    draft RateLimit-* fields; Retry-After itself is RFC 9110 conformant.
+  source: https://docs.advicepay.com/#common-responses
+- id: rfc8594-sunset-header
+  conforms: false
+  evidence: >-
+    An active, dated deprecation exists (canceled -> voided, 2026-12-02) but is announced only in
+    prose. No Sunset or Deprecation response headers are documented.
+- id: openapi
+  conforms: false
+  evidence: >-
+    No OpenAPI or Swagger document is published. Probed /openapi.json, /openapi.yaml,
+    /swagger.json, /v1/openapi.json, /api-docs and /redoc on advicepay.com, app.advicepay.com,
+    demo.advicepay.com and docs.advicepay.com on 2026-09-09 — all miss. The reference is a
+    server-rendered Slate page whose structure (Base URLs block, per-operation parameter tables,
+    a Schemas section with oneOf/xor) is characteristic of widdershins output, which implies an
+    OpenAPI document exists internally but is not published.
+- id: asyncapi
+  conforms: false
+  evidence: >-
+    No event, streaming or webhook surface exists at all — the string "webhook" does not appear
+    in the documentation. Change notification is polling-only via GET /api/public/v1/notifications
+    with createdAfter/createdBefore filters. Not penalised: this provider has no event surface.
+- id: mcp
+  conforms: false
+  evidence: No Model Context Protocol server is published; probed endpoints miss (see mcp/advicepay-mcp.yml).
+- id: a2a
+  conforms: false
+  evidence: No agent card at /.well-known/agent-card.json or /.well-known/agent.json on any host.
+domain_standards:
+- id: pci-dss
+  conforms: partial
+  role: merchant service provider
+  evidence: >-
+    AdvicePay performs an annual PCI Self-Assessment Questionnaire (PCI SAQ A) as required by its
+    processing partner Stripe. AdvicePay explicitly does NOT store, process or transmit cardholder
+    data — Stripe performs all cardholder-data functions and is certified PCI DSS Level 1. So the
+    scope reduction is genuine and the SAQ A attestation is the correct instrument for it.
+  source: https://advicepay.com/security/
+  attestation: PCI SAQ A (annual)
+- id: soc2-type-ii
+  conforms: true
+  evidence: >-
+    Annual SOC 2 Type II audit performed and delivered by the CPA firm KirkpatrickPrice, testing
+    reporting controls relating to security and availability.
+  source: https://advicepay.com/security/
+  auditor: KirkpatrickPrice
+  cadence: annual
+- id: penetration-testing
+  conforms: true
+  evidence: Annual independent third-party penetration tests of the platform.
+  source: https://advicepay.com/security/
+note_on_domain_standards: >-
+  AdvicePay sits in US wealth-management / advisor billing, a market whose regulatory weight falls
+  on the ADVISOR (SEC/FINRA books-and-records, fee-billing substantiation) rather than on a
+  machine-readable interchange standard. There is no FDX, ISO 20022, FIX or CAMARA equivalent that
+  an advisor-billing API would be expected to declare, and AdvicePay declares none — that is a
+  correct absence for this market, not a gap. The domain signal it does carry is the payments one:
+  PCI SAQ A scope reduction behind Stripe, which the contract reflects by never exposing card data
+  (invoice objects carry amounts and statuses, never PANs).
+compliance_program:
+  published: true
+  url: https://advicepay.com/security/
+  certifications:
+  - SOC 2 Type II
+  - PCI SAQ A
+  infrastructure_inherited:
+    provider: Amazon Web Services
+    note: >-
+      The security page also lists the certifications of its hosting provider (AWS: ISO 27001,
+      ISO 27017, ISO 27018, SOC 1/2/3, PCI DSS Level 1) and its payment processor (Stripe: PCI DSS
+      Service Provider Level 1, annual SOC 2 Type II). These are AdvicePay's vendors'
+      certifications, NOT AdvicePay's own, and are recorded here as inherited context so a reader
+      does not mistake them for first-party attestations.

@@ -1,0 +1,83 @@
+generated: '2026-09-09'
+method: searched
+source: https://docs.advicepay.com/#common-responses
+format: custom-json
+format_note: >-
+  Not RFC 9457. AdvicePay returns a proprietary JSON error envelope with `code`, `message` and an
+  optional `details` object; responses are application/json, not application/problem+json, and
+  there is no `type` URI per error class. The envelope is documented once under "Common
+  Responses" and applies to every endpoint in the API.
+envelope:
+  content_type: application/json
+  fields:
+  - field: code
+    type: integer
+    description: The HTTP status code representing the error, repeated inside the body.
+  - field: message
+    type: string
+    description: A human-readable description of what went wrong.
+  - field: details
+    type: object
+    required: false
+    description: >-
+      Field-level detail, keyed by the offending property name with the constraint it violated —
+      e.g. {"email": "must be unique"} on a 409.
+  example:
+    code: 409
+    message: Conflict -- likely that you are trying to create or update something with a non-unique email.
+    details:
+      email: must be unique
+problems:
+- status: 401
+  title: Unauthorized
+  description: The API user is not authorized to perform the requested action.
+  remediation: >-
+    Confirm the Authorization header carries a live bearer token. Access tokens expire after 5
+    minutes, so a long-running integration will see this routinely and should refresh rather than
+    treat it as fatal.
+- status: 404
+  title: Not Found
+  description: The specified resource was not found.
+- status: 405
+  title: Method Not Allowed
+  description: You tried to access an endpoint with an invalid HTTP method.
+- status: 406
+  title: Not Acceptable
+  description: You requested a format that isn't JSON.
+  remediation: "Send Accept: application/json."
+- status: 409
+  title: Conflict
+  description: >-
+    You submitted conflicting data. Most often a uniqueness violation on an email address when
+    creating or updating an admin, advisor or client.
+  remediation: Read `details` for the offending field; reconcile against the existing record before retrying.
+- status: 429
+  title: Too Many Requests
+  description: The API request rate limit has been exceeded.
+  remediation: >-
+    Honor the Retry-After response header (seconds to wait). See rate-limits/advicepay-rate-limits.yml
+    for the published ceilings and the X-RateLimit-* headers returned on success.
+  headers:
+  - Retry-After
+- status: 503
+  title: Service Unavailable
+  description: AdvicePay is down for temporary maintenance.
+  remediation: >-
+    Back off and retry. Planned maintenance and incidents are announced on
+    https://status.advicepay.com/ which exposes a machine-readable /api/v2/summary.json.
+- status: 4XX
+  title: Unknown
+  description: The request was bad. Documented as a catch-all range alongside the enumerated 4xx codes.
+- status: default
+  title: Default
+  description: An unexpected error has occurred.
+coverage:
+  documented_statuses: 9
+  applies_to: all endpoints
+  note: >-
+    AdvicePay documents this error set once, globally, rather than per operation. Individual
+    operations do not enumerate their own failure modes, so an agent cannot tell from the docs
+    which of these an endpoint can actually emit.
+related:
+  conventions: conventions/advicepay-conventions.yml
+  rate_limits: rate-limits/advicepay-rate-limits.yml

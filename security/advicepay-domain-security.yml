@@ -1,0 +1,28 @@
+generated: '2026-09-09'
+method: probed
+source: live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
+hosts:
+- host: advicepay.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Nov 16 03:01:30 2026 GMT
+  hsts: true
+  hsts_max_age: 31536000
+- host: docs.advicepay.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Feb 19 23:59:59 2027 GMT
+  hsts: true
+  hsts_max_age: 31536000
+- host: app.advicepay.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Feb 19 23:59:59 2027 GMT
+  hsts: null
+domains:
+- domain: advicepay.com
+  dnssec: false
+  caa: []
+  spf: true
+  dmarc: true
+  dmarc_policy: none
