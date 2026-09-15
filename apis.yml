@@ -1,15 +1,14 @@
 aid: advicepay
 name: AdvicePay
-description: 'AdvicePay is a fee-for-service billing, payment processing and engagement-management
-  platform built for financial advisors, RIAs and broker-dealers. Founded by Michael Kitces and
-  Alan Moore, it lets firms invoice clients for financial planning advice, collect card and ACH
-  payments, run recurring subscriptions, capture eSignatures, track engagement workflows and
-  deliverables, and enforce compliance oversight over advisor billing. AdvicePay publishes a
-  public REST API (v1.0.1) at app.advicepay.com/api/public/v1 covering admins, advisors,
-  agreements, clients, custom attributes, deliverables, engagements, invoices, notifications,
-  offices, subscriptions and transfers, secured with OAuth 2.0 (authorization code and client
-  credentials, with client_secret_post, client_secret_jwt and private_key_jwt authentication
-  methods) plus SAML 2.0 single sign-on. API access is an Enterprise-plan capability.'
+description: AdvicePay is a fee-for-service billing, payment processing and engagement-management platform
+  built for financial advisors, RIAs and broker-dealers. Founded by Michael Kitces and Alan Moore, it
+  lets firms invoice clients for financial planning advice, collect card and ACH payments, run recurring
+  subscriptions, capture eSignatures, track engagement workflows and deliverables, and enforce compliance
+  oversight over advisor billing. AdvicePay publishes a public REST API (v1.0.1) at app.advicepay.com/api/public/v1
+  covering admins, advisors, agreements, clients, custom attributes, deliverables, engagements, invoices,
+  notifications, offices, subscriptions and transfers, secured with OAuth 2.0 (authorization code and
+  client credentials, with client_secret_post, client_secret_jwt and private_key_jwt authentication methods)
+  plus SAML 2.0 single sign-on. API access is an Enterprise-plan capability.
 image: https://advicepay.com/hubfs/AdvicePay%20Logos/PNG%20AdvicePay%20Logos%20(Email)/Website%20Favicon.png
 url: https://raw.githubusercontent.com/api-evangelist/advicepay/refs/heads/main/apis.yml
 x-type: company
@@ -18,6 +17,17 @@ specificationVersion: '0.20'
 created: '2026-09-09'
 modified: '2026-09-09'
 tags:
+- Financial-Services
+- Payments
+- Billing
+- Invoicing
+- Financial Planning
+- Wealth Management
+- Subscription
+- E-Signature
+- Compliance
+- Fintech
+tags_raw:
 - Financial Services
 - Payments
 - Billing
@@ -29,14 +39,13 @@ tags:
 - Compliance
 - FinTech
 apis:
-- aid: advicepay-api
+- aid: advicepay:advicepay-api
   name: AdvicePay API
-  description: 'The AdvicePay REST API (v1.0.1) exposes the fee-for-service billing platform to
-    integrators: admins, advisors, agreements, clients, custom attributes, deliverables,
-    engagements, invoices, notifications, offices, subscriptions and transfers. It is organized
-    around resource-oriented URLs, accepts and returns JSON, and uses standard HTTP verbs and
-    status codes. Authentication is OAuth 2.0 bearer; a demo environment at demo.advicepay.com
-    mirrors production without touching live data or banking networks.'
+  description: 'The AdvicePay REST API (v1.0.1) exposes the fee-for-service billing platform to integrators:
+    admins, advisors, agreements, clients, custom attributes, deliverables, engagements, invoices, notifications,
+    offices, subscriptions and transfers. It is organized around resource-oriented URLs, accepts and returns
+    JSON, and uses standard HTTP verbs and status codes. Authentication is OAuth 2.0 bearer; a demo environment
+    at demo.advicepay.com mirrors production without touching live data or banking networks.'
   image: https://advicepay.com/hubfs/AdvicePay%20Logos/PNG%20AdvicePay%20Logos%20(Email)/Website%20Favicon.png
   humanURL: https://docs.advicepay.com/#introduction
   baseURL: https://app.advicepay.com/api/public/v1
@@ -147,14 +156,12 @@ common:
 x-contract-discovery:
   date: '2026-09-09'
   result: no-machine-readable-contract
-  detail: >-
-    AdvicePay documents 55 REST operations across 13 resources in a fully public, server-rendered
-    reference at docs.advicepay.com, but publishes no machine-readable description of any kind.
-    The reference is a Slate page whose shape (a Base URLs block, per-operation parameter tables,
-    a Schemas section with 44 schemas including a oneOf/xor Pagination union) is characteristic of
-    widdershins output, which strongly implies an OpenAPI document exists internally. It is not
-    served anywhere reachable. No spec has been generated from the documentation, because a
-    contract this pipeline authored would be a fabrication.
+  detail: AdvicePay documents 55 REST operations across 13 resources in a fully public, server-rendered
+    reference at docs.advicepay.com, but publishes no machine-readable description of any kind. The reference
+    is a Slate page whose shape (a Base URLs block, per-operation parameter tables, a Schemas section
+    with 44 schemas including a oneOf/xor Pagination union) is characteristic of widdershins output, which
+    strongly implies an OpenAPI document exists internally. It is not served anywhere reachable. No spec
+    has been generated from the documentation, because a contract this pipeline authored would be a fabrication.
   probes:
   - hosts:
     - https://docs.advicepay.com
@@ -185,7 +192,7 @@ x-contract-discovery:
     - https://app.advicepay.com/mcp
     - https://app.advicepay.com/api/mcp
     - https://advicepay.com/mcp
-    result: 'DNS failure or 404/403 on every endpoint; no tools/list responded'
+    result: DNS failure or 404/403 on every endpoint; no tools/list responded
   - target: a2a-agent-card
     paths:
     - /.well-known/agent-card.json
@@ -193,21 +200,17 @@ x-contract-discovery:
     hosts_probed: 5
     result: 404 on every host (403 on the S3-backed docs bucket); no card exists
   - target: soap-wsdl
-    result: >-
-      No SOAP surface. ?wsdl returns 404 on app.advicepay.com; advicepay.com returns its ordinary
+    result: No SOAP surface. ?wsdl returns 404 on app.advicepay.com; advicepay.com returns its ordinary
       HubSpot homepage with the query string ignored, which is not a WSDL.
   - target: ogc
     result: not applicable - no geospatial surface and no evidence pointing at one
   - target: asyncapi-webhooks
-    result: >-
-      No event surface exists. The string "webhook" does not appear anywhere in the reference;
-      change notification is polling-only via GET /api/public/v1/notifications.
-  docs_host_note: >-
-    docs.advicepay.com is a static S3 bucket. It answers 403 AccessDenied for any key that does
-    not exist, which is that host's equivalent of a 404 and must not be read as an auth wall.
-  provider_fixable: >-
-    Publishing the underlying OpenAPI at docs.advicepay.com/openapi.json would be a small change
-    with a large effect: it is very likely already generated to build these docs.
+    result: No event surface exists. The string "webhook" does not appear anywhere in the reference; change
+      notification is polling-only via GET /api/public/v1/notifications.
+  docs_host_note: docs.advicepay.com is a static S3 bucket. It answers 403 AccessDenied for any key that
+    does not exist, which is that host's equivalent of a 404 and must not be read as an auth wall.
+  provider_fixable: 'Publishing the underlying OpenAPI at docs.advicepay.com/openapi.json would be a small
+    change with a large effect: it is very likely already generated to build these docs.'
 x-enrichment:
   date: '2026-09-09'
   status: enriched
