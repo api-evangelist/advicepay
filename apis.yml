@@ -17,7 +17,7 @@ specificationVersion: '0.20'
 created: '2026-09-09'
 modified: '2026-09-09'
 tags:
-- Financial-Services
+- Financial Services
 - Payments
 - Billing
 - Invoicing
@@ -38,6 +38,7 @@ tags_raw:
 - eSignature
 - Compliance
 - FinTech
+- Financial-Services
 apis:
 - aid: advicepay:advicepay-api
   name: AdvicePay API
