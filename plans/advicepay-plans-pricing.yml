@@ -108,3 +108,38 @@ api_availability:
 security_terms:
   all_plans: Privacy Policy + SOC 2
   note: The pricing comparison lists "Privacy Policy + SOC 2" as the data/security terms on all three tiers.
+x-canonical:
+  generated: '2026-10-08'
+  vocabulary: all/0-working/economics/plans-canonical.yml
+  models:
+  - hybrid
+  - negotiated
+  - seat
+  units:
+  - object
+  - seat
+  plans:
+  - name: Essential
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - object
+    periods:
+    - month
+  - name: Professional
+    access: other
+    model: seat
+    model_how: derived
+    units:
+    - seat
+    periods:
+    - month
+  - name: Enterprise
+    access: other
+    model: negotiated
+    model_how: derived
+    units:
+    - seat
+    periods:
+    - month
