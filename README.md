@@ -64,79 +64,125 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-AdvicePay is a fee-for-service billing, payment processing and engagement-management platform for
-financial advisors, RIAs and broker-dealers. Founded by Michael Kitces and Alan Moore, it lets firms
-invoice clients for financial planning advice, collect card and ACH payments, run recurring
-subscriptions, capture eSignatures, and track engagement workflows, deliverables and compliance
-oversight.
+AdvicePay is a fee-for-service billing, payment processing and engagement-management platform built for financial advisors, RIAs and broker-dealers. Founded by Michael Kitces and Alan Moore, it lets firms invoice clients for financial planning advice, collect card and ACH payments, run recurring subscriptions, capture eSignatures, track engagement workflows and deliverables, and enforce compliance oversight over advisor billing. AdvicePay publishes a public REST API (v1.0.1) at app.advicepay.com/api/public/v1 covering admins, advisors, agreements, clients, custom attributes, deliverables, engagements, invoices, notifications, offices, subscriptions and transfers, secured with OAuth 2.0 (authorization code and client credentials, with client_secret_post, client_secret_jwt and private_key_jwt authentication methods) plus SAML 2.0 single sign-on. API access is an Enterprise-plan capability.
 
-- Website: https://advicepay.com/
-- API reference: https://docs.advicepay.com/
-- Status: https://status.advicepay.com/
-- Security and compliance: https://advicepay.com/security/
+**Areas:** Financial Services · Payments · Billing · Invoicing · Financial Planning · Wealth Management · Subscription · E-Signature · Compliance · Fintech
 
-## The API
+## AdvicePay on APIs.io
 
-AdvicePay publishes a public REST API (v1.0.1) at `https://app.advicepay.com/api/public/v1`, with a
-test environment at `https://demo.advicepay.com` that does not touch live data or banking networks.
-The reference documents 55 operations across 13 resources: admins, advisors, agreements, clients,
-custom attributes, deliverables, engagements, invoices, notifications, offices, subscriptions and
-transfers.
+Everything profiled for AdvicePay is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/advicepay/](https://apis.io/providers/advicepay/)** — or go straight to one of the APIs or properties below.
 
-Authentication is OAuth 2.0 (authorization code and client credentials) with three client
-authentication methods — `client_secret_post`, `client_secret_jwt` (HS256) and `private_key_jwt`
-(RS256) — plus SAML 2.0 single sign-on. Access tokens live 5 minutes; refresh tokens are single-use
-and rotate on every use.
+### APIs (1)
 
-**API access is an Enterprise-plan capability.** The documentation is fully public and needs no
-login, but calling the API requires an Enterprise contract.
+- [AdvicePay API](https://apis.io/apis/advicepay/advicepay-api/) — The AdvicePay REST API (v1.0.1) exposes the fee-for-service billing platform to integrators: admins, advisors, agreements, clients, custom attributes,…
 
-## What this profile found
+### Published properties
 
-- **No machine-readable contract.** The reference is a server-rendered Slate page that looks
-  widdershins-generated, so an OpenAPI almost certainly exists internally — but none is served.
-  Probed 14 spec paths across four hosts; all miss. See `x-contract-discovery` in `apis.yml`.
-  No spec has been generated from the docs, because an authored contract would be a fabrication.
-- **No idempotency, on an API that moves money.** Nothing in the documentation describes an
-  idempotency key, a de-duplication window or a safe-retry contract, including on invoice creation,
-  subscription creation and refunds.
-- **No webhooks.** Change notification is polling-only, via the notifications endpoint with
-  `createdAfter` / `createdBefore` filters.
-- **Refunds are the only reversal.** Subscriptions can be created through the API but not
-  cancelled through it, and no window is published for how long a refund remains possible.
-- **Good rate-limit hygiene.** Published ceilings (10 req/sec, 1 req/sec on agreement download),
-  `X-RateLimit-*` headers on success and `Retry-After` on 429.
-- **A well-run deprecation in flight.** The `canceled` invoice status is being replaced by
-  `voided` on 2026-12-02, with dual-accept during the transition and a `useVoidedStatus` opt-in
-  parameter for testing ahead of the cutover — announced in prose only, with no RFC 8594 headers.
-- **No SDKs.** Nothing on npm, PyPI, RubyGems, NuGet, crates.io or Packagist, and no first-party
-  GitHub organization. The docs' seven-language snippets are generated raw-HTTP samples.
-- **No `/.well-known/` surface.** All 15 named paths 404 on all five hosts.
-- **Real compliance posture.** SOC 2 Type II (KirkpatrickPrice, annual), PCI SAQ A behind Stripe,
-  annual third-party penetration tests.
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
 
-## Artifacts in this repository
+#### MCP servers (1)
 
-| Artifact | File |
+Model Context Protocol servers that expose the API to agents.
+
+- [advicepay](https://apis.io/servers/advicepay/advicepay/)
+
+#### Security (4)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Advicepay Authentication](https://apis.io/security/advicepay/advicepay-authentication/)
+- [Advicepay Domain Security](https://apis.io/security/advicepay/advicepay-domain-security/)
+- [Advicepay Trust Center](https://apis.io/security/advicepay/advicepay-trust-center/)
+- [Advicepay Vulnerability Disclosure](https://apis.io/security/advicepay/advicepay-vulnerability-disclosure/)
+
+#### OAuth scopes (1)
+
+The permissions the API asks for.
+
+- [Advicepay Scopes](https://apis.io/scopes/advicepay/advicepay-scopes/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Advicepay Plans Pricing](https://apis.io/plans/advicepay/advicepay-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Advicepay Rate Limits](https://apis.io/rate-limits/advicepay/advicepay-rate-limits/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://advicepay.com/)
+- [Documentation](https://docs.advicepay.com/#introduction)
+- [Getting started](https://docs.advicepay.com/#introduction)
+- [API reference](https://docs.advicepay.com/)
+- [Pricing](https://advicepay.com/pricing/)
+- [Sign up](https://app.advicepay.com/signup)
+- [Support](https://advicepay.com/contact-support/)
+- [Changelog](https://advicepay.com/changelog)
+- [Blog](https://blog.advicepay.com/press)
+- [Security](https://advicepay.com/security/)
+- [Compliance](https://advicepay.com/security/)
+- [Terms of service](https://advicepay.com/terms-of-use/)
+- [Privacy policy](https://advicepay.com/privacy-policy)
+- [Status](https://status.advicepay.com/)
+
+## API Evangelist rating
+
+**Kin Score 50.4** — developing · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
 |---|---|
-| Authentication profile | `authentication/advicepay-authentication.yml` |
-| OAuth scopes | `scopes/advicepay-scopes.yml` |
-| Error catalog | `errors/advicepay-problem-types.yml` |
-| Rate limits | `rate-limits/advicepay-rate-limits.yml` |
-| Conventions, idempotency, reversibility | `conventions/advicepay-conventions.yml` |
-| Lifecycle and deprecation | `lifecycle/advicepay-lifecycle.yml` |
-| Conformance and domain standards | `conformance/advicepay-conformance.yml` |
-| Data model | `data-model/advicepay-data-model.yml` |
-| Sandbox and test environment | `sandbox/advicepay-sandbox.yml` |
-| Plans and pricing | `plans/advicepay-plans-pricing.yml` |
-| Changelog | `changelog/advicepay-changelog.yml` |
-| Packages | `packages/advicepay-packages.yml` |
-| Well-known probe | `well-known/advicepay-well-known.yml` |
-| Candidate MCP tool list | `mcp/advicepay-mcp.yml` |
-| Domain security | `security/advicepay-domain-security.yml` |
-| Vulnerability disclosure | `security/advicepay-vulnerability-disclosure.yml` |
-| Trust center | `security/advicepay-trust-center.yml` |
-| llms.txt | `llms/advicepay-llms.txt` |
+| Discoverability | 66.1 |
+| Contract quality | 0.0 |
+| Contract governance | 18.2 |
+| Operational transparency | 71.1 |
+| Developer ergonomics | 53.6 |
+| Access clarity | 92.1 |
 
-The MCP tool list is a **candidate** derived by API Evangelist from AdvicePay's documented
-operations. AdvicePay ships no MCP server; nothing can call it.
+**Agent readiness 7.9** — agent-aware
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | — |
+| Agentic Access | — |
+| Reversibility Documented | — |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | documented (partial credit) |
+| OpenAPI Examples | — |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | — |
+| Agent Skills | — |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+| Pagination Ratio | na |
+| Operation Distinctiveness | na |
+
+**Regulatory alignment 41.1** — Payments
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/advicepay/](https://apis.io/providers/advicepay/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for AdvicePay: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/advicepay/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
